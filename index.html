@@ -1,1 +1,369 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suhaib Store</title>
+
+  <style>
+    :root{
+      --bg:#0b1220; --card:#111b2e; --text:#e9eefc; --muted:#a9b4d0;
+      --border:rgba(255,255,255,.10); --accent:#5aa7ff; --ok:#4ee59b; --danger:#ff5a7a;
+      --shadow:0 12px 30px rgba(0,0,0,.35); --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif;
+      background:
+        radial-gradient(900px 500px at 10% 0%, rgba(90,167,255,0.12), transparent),
+        radial-gradient(700px 500px at 90% 10%, rgba(78,229,155,0.10), transparent),
+        var(--bg);
+      color:var(--text);
+    }
+    .container{max-width:1100px;margin:0 auto;padding:18px}
+    header{
+      position:sticky; top:0; z-index:5;
+      background:rgba(11,18,32,.85);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:44px;height:44px;border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      object-fit:contain;
+    }
+    h1{margin:0;font-size:18px}
+    .subtitle{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{
+      cursor:pointer;border:1px solid var(--border);
+      background:rgba(255,255,255,.06);color:var(--text);
+      padding:10px 12px;border-radius:12px;font-weight:900;text-decoration:none;
+      display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+    }
+    .btn:hover{filter:brightness(1.08)}
+    .btn.ghost{background:rgba(255,255,255,.03)}
+    .pill{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);color:var(--muted);background:rgba(255,255,255,.03)}
+    .toolbar{margin-top:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+    .search{
+      flex:1;min-width:240px;display:flex;gap:10px;align-items:center;
+      padding:10px 12px;border-radius:14px;border:1px solid var(--border);background:rgba(0,0,0,.18);
+    }
+    .search input{width:100%;border:none;outline:none;background:transparent;color:var(--text);font-size:14px}
+    .small{font-size:12px;color:var(--muted)}
+    .grid{margin-top:16px;display:grid;gap:14px;grid-template-columns:repeat(auto-fit, minmax(230px, 1fr))}
+    .card{
+      border-radius:var(--radius);border:1px solid var(--border);background:rgba(17,27,46,.92);
+      box-shadow:var(--shadow);overflow:hidden;cursor:pointer;transition:transform .12s ease, filter .12s ease;
+    }
+    .card:hover{transform:translateY(-2px); filter:brightness(1.06)}
+    .imgWrap{height:170px;background:linear-gradient(135deg, rgba(90,167,255,.18), rgba(78,229,155,.12));border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+    .imgWrap img{width:100%;height:100%;object-fit:cover;display:none}
+    .imgPlaceholder{text-align:center;color:rgba(233,238,252,.9);font-weight:900;padding:10px;line-height:1.4}
+    .content{padding:12px}
+    .content h3{margin:0 0 6px;font-size:15px}
+    .content p{margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.6;min-height:42px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .price{font-weight:1000;font-size:14px}
+    .tag{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);color:var(--muted)}
+    .tag.featured{border-color:rgba(255,211,107,.45);color:#ffd36b}
+    footer{margin-top:18px;border-top:1px solid var(--border);color:var(--muted);padding:18px 0 30px;font-size:12px;text-align:center}
+
+    /* Modal */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:18px;z-index:20}
+    .modal{width:min(760px,100%);border-radius:18px;border:1px solid var(--border);background:rgba(17,27,46,.98);box-shadow:var(--shadow);overflow:hidden}
+    .modalHead{padding:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .modalHead h2{margin:0;font-size:16px}
+    .closeBtn{cursor:pointer;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);width:40px;height:40px;border-radius:12px;font-weight:900}
+    .modalBody{padding:14px;display:grid;grid-template-columns:1fr 1.2fr;gap:14px}
+    @media(max-width:860px){.modalBody{grid-template-columns:1fr}}
+    .modalImg{border-radius:14px;border:1px solid var(--border);overflow:hidden;background:linear-gradient(135deg, rgba(90,167,255,.18), rgba(78,229,155,.12));height:260px;display:flex;align-items:center;justify-content:center}
+    .modalImg img{width:100%;height:100%;object-fit:cover;display:none}
+    .contactBox{border:1px solid var(--border);background:rgba(255,255,255,.03);border-radius:14px;padding:12px}
+    .contactBtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn.whatsapp{border-color:rgba(78,229,155,.45); background:rgba(78,229,155,.12)}
+    .btn.instagram{border-color:rgba(90,167,255,.45); background:rgba(90,167,255,.12)}
+    .btn.disabled{opacity:.45;pointer-events:none}
+    .note{font-size:12px;color:var(--muted);margin-top:8px}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="topbar">
+        <div class="brand">
+          <img id="logo" class="logo" alt="Logo">
+          <div>
+            <h1 id="storeName">Suhaib Store</h1>
+            <p class="subtitle">اضغط على أي منتج للتواصل واتساب أو انستغرام</p>
+          </div>
+        </div>
+        <div class="actions">
+          <span class="pill" id="countPill">0 منتج</span>
+          <a class="btn ghost" href="./admin.html">Admin</a>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search">
+          🔎 <input id="searchInput" type="text" placeholder="ابحث باسم المنتج..." />
+        </div>
+        <div class="small" id="hintText">جاهز الآن — بعدين بنربطه مع Supabase</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="grid" id="grid"></div>
+    <footer>© <span id="year"></span> <span id="storeName2"></span></footer>
+  </main>
+
+  <!-- Modal -->
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modalHead">
+        <h2>تفاصيل المنتج</h2>
+        <button class="closeBtn" id="closeBtn" type="button">✕</button>
+      </div>
+
+      <div class="modalBody">
+        <div class="modalImg">
+          <img id="mImg" alt="صورة المنتج">
+          <div id="mPh" class="imgPlaceholder">لا توجد صورة</div>
+        </div>
+
+        <div>
+          <h3 id="mName" style="margin:0 0 8px;"></h3>
+          <p id="mDesc" style="margin:0 0 12px;color:var(--muted);line-height:1.7;"></p>
+
+          <div class="row" style="margin-bottom:10px;">
+            <div class="price" id="mPrice"></div>
+            <div class="tag" id="mTag"></div>
+          </div>
+
+          <div class="contactBox">
+            <div style="font-weight:900;">تواصل الآن</div>
+            <div class="note">سيتم فتح واتساب أو انستغرام برسالة جاهزة عن المنتج.</div>
+
+            <div class="contactBtns">
+              <a id="waBtn" class="btn whatsapp" href="#" target="_blank" rel="noopener">واتساب</a>
+              <a id="igBtn" class="btn instagram" href="#" target="_blank" rel="noopener">انستغرام</a>
+            </div>
+
+            <div class="note" id="contactNote"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script>
+    const cfg = window.STORE_CONFIG || {};
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("storeName").textContent = cfg.STORE_NAME || "Suhaib Store";
+    document.getElementById("storeName2").textContent = cfg.STORE_NAME || "Suhaib Store";
+
+    // Logo
+    const logo = document.getElementById("logo");
+    logo.src = cfg.LOGO_PATH || "./logo.png";
+    logo.onerror = () => { logo.style.display = "none"; };
+
+    const DEMO_PRODUCTS = [
+      { id:"1", title_ar:"ساعة ذكية", desc_ar:"ساعة مريحة للاستخدام اليومي مع تصميم أنيق.", price:"25", currency:"JOD", image_url:"", featured:true },
+      { id:"2", title_ar:"سماعات بلوتوث", desc_ar:"صوت واضح وبطارية ممتازة.", price:"15", currency:"JOD", image_url:"", featured:false },
+      { id:"3", title_ar:"حامل هاتف للسيارة", desc_ar:"ثابت وسهل التركيب، مناسب لمعظم الهواتف.", price:"7", currency:"JOD", image_url:"", featured:false },
+    ];
+
+    const grid = document.getElementById("grid");
+    const countPill = document.getElementById("countPill");
+    const searchInput = document.getElementById("searchInput");
+    const hintText = document.getElementById("hintText");
+
+    const overlay = document.getElementById("overlay");
+    const closeBtn = document.getElementById("closeBtn");
+    const mImg = document.getElementById("mImg");
+    const mPh = document.getElementById("mPh");
+    const mName = document.getElementById("mName");
+    const mDesc = document.getElementById("mDesc");
+    const mPrice = document.getElementById("mPrice");
+    const mTag = document.getElementById("mTag");
+    const waBtn = document.getElementById("waBtn");
+    const igBtn = document.getElementById("igBtn");
+    const contactNote = document.getElementById("contactNote");
+
+    let all = [];
+
+    function isSupabaseReady(){
+      return (cfg.SUPABASE_URL || "").startsWith("https://") && (cfg.SUPABASE_ANON_KEY || "").length > 20;
+    }
+
+    function cleanNumber(n){
+      return (n || "").toString().replace(/[^\d]/g,"").trim();
+    }
+
+    function buildWhatsAppLink(p){
+      const num = cleanNumber(cfg.WHATSAPP_NUMBER);
+      if(!num || (cfg.WHATSAPP_NUMBER || "").includes("PUT_")) return "";
+      const msg = `مرحبا، مهتم بمنتج: ${p.title_ar} بسعر ${p.price} ${p.currency || ""}. هل متوفر؟`;
+      return `https://wa.me/${encodeURIComponent(num)}?text=${encodeURIComponent(msg)}`;
+    }
+
+    function buildInstagramLink(){
+      const url = (cfg.INSTAGRAM_URL || "").trim();
+      if(!url || url.includes("PUT_")) return "";
+      return url;
+    }
+
+    function render(list){
+      grid.innerHTML = "";
+      countPill.textContent = `${list.length} منتج`;
+
+      list.forEach(p=>{
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const imgWrap = document.createElement("div");
+        imgWrap.className = "imgWrap";
+
+        const img = document.createElement("img");
+        img.alt = p.title_ar || "Product";
+
+        const ph = document.createElement("div");
+        ph.className = "imgPlaceholder";
+        ph.innerHTML = `صورة المنتج<br><span style="font-weight:800;opacity:.85">${(p.title_ar || "")}</span>`;
+
+        if(p.image_url){
+          img.src = p.image_url;
+          img.style.display = "block";
+          ph.style.display = "none";
+        }
+
+        imgWrap.appendChild(img);
+        imgWrap.appendChild(ph);
+
+        const content = document.createElement("div");
+        content.className = "content";
+
+        const h3 = document.createElement("h3");
+        h3.textContent = p.title_ar || "(بدون اسم)";
+
+        const desc = document.createElement("p");
+        desc.textContent = p.desc_ar || "";
+
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const price = document.createElement("div");
+        price.className = "price";
+        price.textContent = p.price ? `${p.price} ${p.currency || ""}` : "";
+
+        const tag = document.createElement("div");
+        tag.className = "tag" + (p.featured ? " featured" : "");
+        tag.textContent = p.featured ? "Featured" : "Normal";
+
+        row.appendChild(price);
+        row.appendChild(tag);
+
+        content.appendChild(h3);
+        content.appendChild(desc);
+        content.appendChild(row);
+
+        card.appendChild(imgWrap);
+        card.appendChild(content);
+
+        card.addEventListener("click", ()=> openModal(p));
+        grid.appendChild(card);
+      });
+    }
+
+    function openModal(p){
+      mName.textContent = p.title_ar || "—";
+      mDesc.textContent = p.desc_ar || "";
+      mPrice.textContent = p.price ? `${p.price} ${p.currency || ""}` : "—";
+      mTag.className = "tag" + (p.featured ? " featured" : "");
+      mTag.textContent = p.featured ? "Featured" : "Normal";
+
+      if(p.image_url){
+        mImg.src = p.image_url;
+        mImg.style.display = "block";
+        mPh.style.display = "none";
+      }else{
+        mImg.removeAttribute("src");
+        mImg.style.display = "none";
+        mPh.style.display = "block";
+        mPh.textContent = "لا توجد صورة";
+      }
+
+      const wa = buildWhatsAppLink(p);
+      const ig = buildInstagramLink();
+
+      if(wa){ waBtn.href = wa; waBtn.classList.remove("disabled"); }
+      else { waBtn.href = "#"; waBtn.classList.add("disabled"); }
+
+      if(ig){ igBtn.href = ig; igBtn.classList.remove("disabled"); }
+      else { igBtn.href = "#"; igBtn.classList.add("disabled"); }
+
+      contactNote.textContent = (!wa || !ig)
+        ? "⚠️ ضع رقم واتساب ورابط الانستغرام داخل config.js (WHATSAPP_NUMBER و INSTAGRAM_URL)."
+        : "";
+
+      overlay.style.display = "flex";
+    }
+
+    function closeModal(){ overlay.style.display = "none"; }
+    closeBtn.addEventListener("click", closeModal);
+    overlay.addEventListener("click", (e)=>{ if(e.target===overlay) closeModal(); });
+    window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); });
+
+    function applySearch(){
+      const q = (searchInput.value || "").trim().toLowerCase();
+      if(!q) return render(all);
+      render(all.filter(p => (p.title_ar || "").toLowerCase().includes(q)));
+    }
+    searchInput.addEventListener("input", applySearch);
+
+    async function loadFromSupabase(){
+      const url =
+        cfg.SUPABASE_URL +
+        "/rest/v1/products?select=id,title_ar,desc_ar,price,currency,image_url,featured,created_at&order=created_at.desc";
+
+      const res = await fetch(url, {
+        headers: {
+          apikey: cfg.SUPABASE_ANON_KEY,
+          Authorization: "Bearer " + cfg.SUPABASE_ANON_KEY,
+        },
+      });
+
+      if(!res.ok){
+        const t = await res.text();
+        throw new Error(t);
+      }
+      return await res.json();
+    }
+
+    (async ()=>{
+      if(isSupabaseReady()){
+        hintText.textContent = "✅ مربوط مع Supabase";
+        try{
+          all = await loadFromSupabase();
+        }catch(err){
+          hintText.textContent = "⚠️ حصل خطأ بجلب البيانات من Supabase — سيتم عرض منتجات تجريبية";
+          all = DEMO_PRODUCTS;
+          console.log(err);
+        }
+      }else{
+        hintText.textContent = "⚠️ Supabase غير مربوط بعد — منتجات تجريبية";
+        all = DEMO_PRODUCTS;
+      }
+      render(all);
+    })();
+  </script>
+</body>
+</html>
 
