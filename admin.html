@@ -3,24 +3,797 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
   <title>Admin - Suhaib Store</title>
+
   <style>
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#e9eefc}
-    .container{max-width:900px;margin:0 auto;padding:18px}
-    .card{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);border-radius:14px;padding:14px}
-    a{color:#5aa7ff;text-decoration:none}
+    :root{
+      --bg:#0b1220; --card:#111b2e; --text:#e9eefc; --muted:#a9b4d0;
+      --border:rgba(255,255,255,.10); --shadow:0 12px 30px rgba(0,0,0,.35);
+      --radius:16px; --accent:#5aa7ff; --ok:#4ee59b; --danger:#ff5a7a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif;
+      background:
+        radial-gradient(900px 500px at 10% 0%, rgba(90,167,255,0.12), transparent),
+        radial-gradient(700px 500px at 90% 10%, rgba(78,229,155,0.10), transparent),
+        var(--bg);
+      color:var(--text);
+    }
+    .container{max-width:1100px;margin:0 auto;padding:18px}
+    header{
+      background:rgba(11,18,32,.85);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.06);object-fit:contain}
+    h1{margin:0;font-size:18px}
+    .subtitle{margin:6px 0 0;color:var(--muted);font-size:13px}
+
+    .btn{
+      cursor:pointer;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:900;
+      text-decoration:none;
+      display:inline-flex;align-items:center;gap:8px;
+      white-space:nowrap;
+    }
+    .btn:hover{filter:brightness(1.08)}
+    .btn.primary{border-color:rgba(90,167,255,.35); background:rgba(90,167,255,.15)}
+    .btn.danger{border-color:rgba(255,90,122,.35); background:rgba(255,90,122,.12)}
+    .btn.ghost{background:rgba(255,255,255,.03)}
+
+    .grid{margin-top:16px;display:grid;gap:14px;grid-template-columns: 420px 1fr;}
+    @media(max-width:980px){ .grid{grid-template-columns:1fr;} }
+
+    .card{
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      background:rgba(17,27,46,.92);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .cardHead{padding:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .cardHead h2{margin:0;font-size:15px}
+    .cardBody{padding:14px}
+
+    label{display:block;margin:10px 0 6px;color:var(--muted);font-size:12px}
+    input, textarea{
+      width:100%;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      font-size:14px;
+    }
+    textarea{min-height:90px;resize:vertical}
+
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row > div{flex:1;min-width:160px}
+    .inline{display:flex;align-items:center;gap:10px;margin-top:10px}
+    .inline input[type="checkbox"]{width:auto}
+    .msg{margin-top:12px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--muted);font-size:13px}
+    .msg.ok{border-color:rgba(78,229,155,.35);color:var(--ok)}
+    .msg.err{border-color:rgba(255,90,122,.45);color:var(--danger)}
+
+    table{width:100%;border-collapse:collapse}
+    th, td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);text-align:right;font-size:13px;vertical-align:top}
+    th{color:var(--muted);font-weight:900}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .small{font-size:12px;color:var(--muted)}
+    .imgPrev{
+      margin-top:10px;
+      width:100%;
+      height:200px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .imgPrev img{width:100%;height:100%;object-fit:cover;display:none}
+    .imgPrev .ph{color:var(--muted);font-size:13px;font-weight:800}
+    footer{margin-top:18px;color:var(--muted);font-size:12px;text-align:center}
+    code{direction:ltr;unicode-bidi:plaintext}
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="card">
-      <h2 style="margin:0 0 10px;">لوحة الإدارة</h2>
-      <p style="opacity:.8;margin:0 0 12px;">
-        ✅ جاهزين — بعد ما ننشئ Supabase من الصفر، بعطيك Admin كامل (تسجيل دخول + إضافة/تعديل/حذف + رفع صور).
-      </p>
-      <a href="./index.html">رجوع للمتجر</a>
+  <header>
+    <div class="container">
+      <div class="topbar">
+        <div class="brand">
+          <img id="logo" class="logo" alt="Logo">
+          <div>
+            <h1 id="storeName">لوحة الإدارة</h1>
+            <p class="subtitle">تسجيل دخول + إضافة/تعديل/حذف + رفع صور (Supabase)</p>
+          </div>
+        </div>
+
+        <div class="row" style="align-items:center;">
+          <a class="btn ghost" href="./index.html">رجوع للمتجر</a>
+          <button class="btn danger" id="logoutBtn" type="button" style="display:none;">تسجيل خروج</button>
+        </div>
+      </div>
     </div>
-  </div>
+  </header>
+
+  <main class="container">
+    <!-- LOGIN -->
+    <div class="card" id="loginCard">
+      <div class="cardHead">
+        <h2>تسجيل دخول Admin</h2>
+        <div class="small">افتح هذه الصفحة أنت فقط: <code>/admin.html</code></div>
+      </div>
+      <div class="cardBody">
+        <label>الإيميل</label>
+        <input id="email" type="email" placeholder="admin@email.com" />
+
+        <label>كلمة المرور</label>
+        <input id="password" type="password" placeholder="********" />
+
+        <div class="inline">
+          <button class="btn primary" id="loginBtn" type="button">تسجيل الدخول</button>
+          <span class="small" id="loginHint"></span>
+        </div>
+
+        <div class="msg" id="loginMsg" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- PANEL -->
+    <div class="grid" id="panel" style="display:none;">
+
+      <!-- FORM -->
+      <div class="card">
+        <div class="cardHead">
+          <h2 id="formTitle">إضافة منتج جديد</h2>
+          <div class="actions">
+            <button class="btn ghost" id="resetBtn" type="button">مسح الحقول</button>
+          </div>
+        </div>
+
+        <div class="cardBody">
+          <div class="msg" id="formMsg" style="display:none;"></div>
+
+          <label>اسم المنتج (عربي) *</label>
+          <input id="title_ar" type="text" placeholder="مثال: ساعة ذكية" />
+
+          <label>وصف المنتج (عربي)</label>
+          <textarea id="desc_ar" placeholder="اكتب وصف بسيط..."></textarea>
+
+          <div class="row">
+            <div>
+              <label>السعر *</label>
+              <input id="price" type="text" placeholder="مثال: 25" />
+            </div>
+            <div>
+              <label>العملة</label>
+              <input id="currency" type="text" placeholder="SAR" />
+            </div>
+          </div>
+
+          <div class="inline">
+            <input id="featured" type="checkbox" />
+            <label for="featured" style="margin:0;color:var(--text);">Featured</label>
+          </div>
+
+          <label>صورة المنتج (رفع)</label>
+          <input id="imageFile" type="file" accept="image/*" />
+
+          <div class="imgPrev" id="imgPrev">
+            <img id="imgPrevImg" alt="Preview">
+            <div class="ph" id="imgPrevPh">لا توجد صورة</div>
+          </div>
+
+          <div class="inline" style="margin-top:12px;">
+            <button class="btn primary" id="saveBtn" type="button">حفظ المنتج</button>
+            <button class="btn ghost" id="cancelEditBtn" type="button" style="display:none;">إلغاء التعديل</button>
+          </div>
+
+          <div class="small" style="margin-top:10px;">
+            ملاحظة: تحتاج سياسات RLS للجدول + وسياسات Storage للرفع.
+          </div>
+        </div>
+      </div>
+
+      <!-- LIST -->
+      <div class="card">
+        <div class="cardHead">
+          <h2>المنتجات</h2>
+          <div class="actions">
+            <button class="btn ghost" id="refreshBtn" type="button">تحديث</button>
+          </div>
+        </div>
+        <div class="cardBody">
+          <div class="msg" id="listMsg" style="display:none;"></div>
+
+          <label>بحث</label>
+          <input id="listSearch" type="text" placeholder="ابحث باسم المنتج..." />
+
+          <div style="margin-top:10px; overflow:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>الاسم</th>
+                  <th>السعر</th>
+                  <th>Featured</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+
+          <div class="small" style="margin-top:10px;">
+            إذا لم تظهر منتجات: تأكد أنك نفذت SQL وأنشأت bucket.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>Suhaib Store © <span id="year"></span></footer>
+  </main>
+
+  <script src="./config.js"></script>
+  <script>
+    const cfg = window.STORE_CONFIG || {};
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Logo + name
+    const logo = document.getElementById("logo");
+    logo.src = cfg.LOGO_PATH || "./logo.png";
+    logo.onerror = () => { logo.style.display = "none"; };
+    document.getElementById("storeName").textContent = (cfg.STORE_NAME || "Suhaib Store") + " — Admin";
+
+    const base = (cfg.SUPABASE_URL || "").trim();
+    const key  = (cfg.SUPABASE_PUBLISHABLE_KEY || "").trim();
+    const bucket = (cfg.STORAGE_BUCKET || "product-images").trim();
+
+    // Elements
+    const loginCard = document.getElementById("loginCard");
+    const panel = document.getElementById("panel");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const emailEl = document.getElementById("email");
+    const passEl = document.getElementById("password");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginMsg = document.getElementById("loginMsg");
+    const loginHint = document.getElementById("loginHint");
+
+    const formTitle = document.getElementById("formTitle");
+    const formMsg = document.getElementById("formMsg");
+    const titleArEl = document.getElementById("title_ar");
+    const descArEl = document.getElementById("desc_ar");
+    const priceEl = document.getElementById("price");
+    const currencyEl = document.getElementById("currency");
+    const featuredEl = document.getElementById("featured");
+    const imageFileEl = document.getElementById("imageFile");
+    const imgPrev = document.getElementById("imgPrev");
+    const imgPrevImg = document.getElementById("imgPrevImg");
+    const imgPrevPh = document.getElementById("imgPrevPh");
+    const saveBtn = document.getElementById("saveBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+    const listMsg = document.getElementById("listMsg");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const tbody = document.getElementById("tbody");
+    const listSearch = document.getElementById("listSearch");
+
+    // State
+    const SESSION_KEY = "suhaib_store_admin_session_v1";
+    let products = [];
+    let editingId = null;
+    let editingOldImageUrl = "";
+
+    function showMsg(el, text, type){
+      el.style.display = "block";
+      el.className = "msg" + (type ? (" " + type) : "");
+      el.textContent = text;
+    }
+    function hideMsg(el){ el.style.display = "none"; el.textContent = ""; }
+
+    function saveSession(s){ localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
+    function loadSession(){
+      try{ return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
+      catch{ return null; }
+    }
+    function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+
+    // --- Auth (Password)
+    async function signIn(email, password){
+      const url = base + "/auth/v1/token?grant_type=password";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          apikey: key,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json().catch(()=> ({}));
+      if(!res.ok){
+        throw new Error(data.error_description || data.msg || "فشل تسجيل الدخول");
+      }
+
+      const expiresAt = Math.floor(Date.now()/1000) + (data.expires_in || 0);
+      saveSession({
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        expires_at: expiresAt,
+        user: data.user || null
+      });
+    }
+
+    async function refreshToken(session){
+      const url = base + "/auth/v1/token?grant_type=refresh_token";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          apikey: key,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ refresh_token: session.refresh_token })
+      });
+
+      const data = await res.json().catch(()=> ({}));
+      if(!res.ok){
+        throw new Error(data.error_description || "انتهت الجلسة، سجل دخول مرة أخرى");
+      }
+
+      const expiresAt = Math.floor(Date.now()/1000) + (data.expires_in || 0);
+      const newSession = {
+        access_token: data.access_token,
+        refresh_token: data.refresh_token || session.refresh_token,
+        expires_at: expiresAt,
+        user: data.user || session.user || null
+      };
+      saveSession(newSession);
+      return newSession;
+    }
+
+    async function getValidAccessToken(){
+      let s = loadSession();
+      if(!s) return null;
+
+      const now = Math.floor(Date.now()/1000);
+      if(s.expires_at && now > (s.expires_at - 60)){
+        s = await refreshToken(s);
+      }
+      return s.access_token;
+    }
+
+    // --- Helpers
+    function encodePath(p){
+      return p.split("/").map(encodeURIComponent).join("/");
+    }
+
+    function guessExt(file){
+      const name = (file.name || "").toLowerCase();
+      const m = name.match(/\.([a-z0-9]+)$/);
+      return m ? m[1] : "png";
+    }
+
+    function resetForm(){
+      editingId = null;
+      editingOldImageUrl = "";
+      formTitle.textContent = "إضافة منتج جديد";
+      titleArEl.value = "";
+      descArEl.value = "";
+      priceEl.value = "";
+      currencyEl.value = cfg.DEFAULT_CURRENCY || "SAR";
+      featuredEl.checked = false;
+      imageFileEl.value = "";
+      imgPrevImg.style.display = "none";
+      imgPrevPh.style.display = "block";
+      imgPrevPh.textContent = "لا توجد صورة";
+      cancelEditBtn.style.display = "none";
+      hideMsg(formMsg);
+    }
+
+    function fillForm(p){
+      editingId = p.id;
+      editingOldImageUrl = p.image_url || "";
+      formTitle.textContent = "تعديل المنتج";
+      titleArEl.value = p.title_ar || "";
+      descArEl.value = p.desc_ar || "";
+      priceEl.value = p.price || "";
+      currencyEl.value = p.currency || (cfg.DEFAULT_CURRENCY || "SAR");
+      featuredEl.checked = !!p.featured;
+
+      imageFileEl.value = "";
+
+      if(p.image_url){
+        imgPrevImg.src = p.image_url;
+        imgPrevImg.style.display = "block";
+        imgPrevPh.style.display = "none";
+      }else{
+        imgPrevImg.removeAttribute("src");
+        imgPrevImg.style.display = "none";
+        imgPrevPh.style.display = "block";
+        imgPrevPh.textContent = "لا توجد صورة";
+      }
+
+      cancelEditBtn.style.display = "inline-flex";
+      hideMsg(formMsg);
+    }
+
+    imageFileEl.addEventListener("change", ()=>{
+      const file = imageFileEl.files && imageFileEl.files[0];
+      if(!file) return;
+
+      const url = URL.createObjectURL(file);
+      imgPrevImg.src = url;
+      imgPrevImg.style.display = "block";
+      imgPrevPh.style.display = "none";
+    });
+
+    // --- Database API (PostgREST)
+    async function dbFetch(path, options = {}){
+      const token = await getValidAccessToken();
+      if(!token) throw new Error("غير مسجل دخول");
+
+      const headers = new Headers(options.headers || {});
+      headers.set("apikey", key);
+      headers.set("Authorization", "Bearer " + token);
+      headers.set("Accept", "application/json");
+
+      return fetch(base + path, { ...options, headers });
+    }
+
+    async function listProducts(){
+      hideMsg(listMsg);
+      const res = await fetch(
+        base + "/rest/v1/products?select=id,title_ar,desc_ar,price,currency,image_url,featured,created_at&order=created_at.desc",
+        {
+          headers: {
+            apikey: key,
+            // قراءة المنتجات مسموحة للجميع عبر RLS policy، لكن داخل الأدمن عادي بدون Authorization
+            Accept: "application/json"
+          }
+        }
+      );
+
+      if(!res.ok){
+        const t = await res.text();
+        throw new Error(t);
+      }
+
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    }
+
+    async function insertProduct(payload){
+      const res = await dbFetch("/rest/v1/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify([payload])
+      });
+
+      if(!res.ok){
+        const t = await res.text();
+        throw new Error(t);
+      }
+
+      const data = await res.json();
+      return (Array.isArray(data) && data[0]) ? data[0] : null;
+    }
+
+    async function updateProduct(id, payload){
+      const res = await dbFetch("/rest/v1/products?id=eq." + encodeURIComponent(id), {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if(!res.ok){
+        const t = await res.text();
+        throw new Error(t);
+      }
+
+      const data = await res.json();
+      return (Array.isArray(data) && data[0]) ? data[0] : null;
+    }
+
+    async function deleteProduct(id){
+      const res = await dbFetch("/rest/v1/products?id=eq." + encodeURIComponent(id), {
+        method: "DELETE",
+        headers: {
+          "Prefer": "return=minimal"
+        }
+      });
+
+      if(!res.ok){
+        const t = await res.text();
+        throw new Error(t);
+      }
+      return true;
+    }
+
+    // --- Storage upload/delete via HTTP
+    function extractStoragePathFromPublicUrl(url){
+      if(!url) return "";
+      const prefix = base + "/storage/v1/object/public/" + bucket + "/";
+      if(url.startsWith(prefix)) return url.slice(prefix.length);
+      return "";
+    }
+
+    async function uploadImage(file){
+      const token = await getValidAccessToken();
+      if(!token) throw new Error("غير مسجل دخول");
+
+      const ext = guessExt(file);
+      const fileName = "p_" + Date.now() + "_" + Math.random().toString(16).slice(2) + "." + ext;
+      const objectPath = "products/" + fileName;
+
+      const uploadUrl = base + "/storage/v1/object/" + bucket + "/" + encodePath(objectPath);
+
+      // Standard upload uses multipart/form-data :contentReference[oaicite:1]{index=1}
+      const form = new FormData();
+      form.append("file", file, file.name);
+
+      const res = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          apikey: key,
+          Authorization: "Bearer " + token,
+          "x-upsert": "true"
+        },
+        body: form
+      });
+
+      if(!res.ok){
+        const t = await res.text();
+        throw new Error(t);
+      }
+
+      const publicUrl = base + "/storage/v1/object/public/" + bucket + "/" + encodePath(objectPath);
+      return publicUrl;
+    }
+
+    async function removeImageByPublicUrl(publicUrl){
+      const token = await getValidAccessToken();
+      if(!token) return;
+
+      const objectPath = extractStoragePathFromPublicUrl(publicUrl);
+      if(!objectPath) return;
+
+      const delUrl = base + "/storage/v1/object/" + bucket + "/" + encodePath(objectPath);
+      await fetch(delUrl, {
+        method: "DELETE",
+        headers: {
+          apikey: key,
+          Authorization: "Bearer " + token
+        }
+      });
+    }
+
+    // --- UI rendering
+    function renderTable(list){
+      const q = (listSearch.value || "").trim().toLowerCase();
+      const filtered = q
+        ? list.filter(p => (p.title_ar || "").toLowerCase().includes(q))
+        : list;
+
+      tbody.innerHTML = "";
+
+      filtered.forEach(p=>{
+        const tr = document.createElement("tr");
+
+        const tdName = document.createElement("td");
+        tdName.textContent = p.title_ar || "";
+
+        const tdPrice = document.createElement("td");
+        tdPrice.textContent = (p.price || "") + " " + (p.currency || "");
+
+        const tdFeat = document.createElement("td");
+        tdFeat.textContent = p.featured ? "Yes" : "No";
+
+        const tdAct = document.createElement("td");
+        const act = document.createElement("div");
+        act.className = "actions";
+
+        const editBtn = document.createElement("button");
+        editBtn.className = "btn ghost";
+        editBtn.type = "button";
+        editBtn.textContent = "تعديل";
+        editBtn.onclick = ()=> fillForm(p);
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "btn danger";
+        delBtn.type = "button";
+        delBtn.textContent = "حذف";
+        delBtn.onclick = async ()=>{
+          const ok = confirm("تأكيد حذف المنتج؟");
+          if(!ok) return;
+
+          try{
+            hideMsg(listMsg);
+
+            // حذف الصورة (اختياري/أفضلية)
+            if(p.image_url){
+              await removeImageByPublicUrl(p.image_url);
+            }
+
+            await deleteProduct(p.id);
+            products = products.filter(x => x.id !== p.id);
+            renderTable(products);
+            showMsg(listMsg, "✅ تم حذف المنتج", "ok");
+            resetForm();
+          }catch(e){
+            showMsg(listMsg, "❌ فشل الحذف: " + (e.message || e), "err");
+          }
+        };
+
+        act.appendChild(editBtn);
+        act.appendChild(delBtn);
+        tdAct.appendChild(act);
+
+        tr.appendChild(tdName);
+        tr.appendChild(tdPrice);
+        tr.appendChild(tdFeat);
+        tr.appendChild(tdAct);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function reload(){
+      try{
+        hideMsg(listMsg);
+        products = await listProducts();
+        renderTable(products);
+      }catch(e){
+        showMsg(listMsg, "❌ مشكلة في تحميل المنتجات: " + (e.message || e), "err");
+      }
+    }
+
+    // --- Events
+    listSearch.addEventListener("input", ()=> renderTable(products));
+
+    resetBtn.addEventListener("click", resetForm);
+
+    cancelEditBtn.addEventListener("click", resetForm);
+
+    refreshBtn.addEventListener("click", reload);
+
+    loginBtn.addEventListener("click", async ()=>{
+      hideMsg(loginMsg);
+      loginHint.textContent = "";
+
+      if(!base || !key){
+        showMsg(loginMsg, "❌ تأكد من SUPABASE_URL و SUPABASE_PUBLISHABLE_KEY داخل config.js", "err");
+        return;
+      }
+
+      const email = (emailEl.value || "").trim();
+      const password = (passEl.value || "").trim();
+      if(!email || !password){
+        showMsg(loginMsg, "❌ اكتب الإيميل وكلمة المرور", "err");
+        return;
+      }
+
+      try{
+        loginBtn.disabled = true;
+        loginHint.textContent = "جارٍ تسجيل الدخول...";
+        await signIn(email, password);
+
+        loginHint.textContent = "";
+        loginCard.style.display = "none";
+        panel.style.display = "grid";
+        logoutBtn.style.display = "inline-flex";
+
+        resetForm();
+        await reload();
+      }catch(e){
+        showMsg(loginMsg, "❌ " + (e.message || e), "err");
+      }finally{
+        loginBtn.disabled = false;
+      }
+    });
+
+    logoutBtn.addEventListener("click", ()=>{
+      clearSession();
+      panel.style.display = "none";
+      logoutBtn.style.display = "none";
+      loginCard.style.display = "block";
+      resetForm();
+      showMsg(loginMsg, "تم تسجيل الخروج.", "");
+    });
+
+    saveBtn.addEventListener("click", async ()=>{
+      hideMsg(formMsg);
+
+      try{
+        const title_ar = (titleArEl.value || "").trim();
+        const desc_ar  = (descArEl.value || "").trim();
+        const price    = (priceEl.value || "").trim();
+        const currency = (currencyEl.value || "").trim() || (cfg.DEFAULT_CURRENCY || "SAR");
+        const featured = !!featuredEl.checked;
+
+        if(!title_ar || !price){
+          showMsg(formMsg, "❌ الاسم والسعر مطلوبين", "err");
+          return;
+        }
+
+        // تأكد أنك مسجل دخول
+        const token = await getValidAccessToken();
+        if(!token){
+          showMsg(formMsg, "❌ لازم تسجل دخول أولاً", "err");
+          return;
+        }
+
+        saveBtn.disabled = true;
+
+        // رفع صورة إذا موجودة
+        let image_url = editingOldImageUrl || "";
+        const file = imageFileEl.files && imageFileEl.files[0];
+        if(file){
+          image_url = await uploadImage(file);
+
+          // إذا كنت بتعدل وكان في صورة قديمة: احذفها (اختياري)
+          if(editingOldImageUrl && editingOldImageUrl !== image_url){
+            await removeImageByPublicUrl(editingOldImageUrl);
+          }
+        }
+
+        const payload = { title_ar, desc_ar, price, currency, image_url, featured };
+
+        if(editingId){
+          const updated = await updateProduct(editingId, payload);
+          // تحديث محلي
+          products = products.map(p => (p.id === editingId ? updated : p));
+          showMsg(formMsg, "✅ تم تحديث المنتج", "ok");
+        }else{
+          const inserted = await insertProduct(payload);
+          if(inserted) products.unshift(inserted);
+          showMsg(formMsg, "✅ تم إضافة المنتج", "ok");
+        }
+
+        renderTable(products);
+        resetForm();
+      }catch(e){
+        showMsg(formMsg, "❌ فشل الحفظ: " + (e.message || e), "err");
+      }finally{
+        saveBtn.disabled = false;
+      }
+    });
+
+    // --- Boot: إذا في جلسة
+    (async ()=>{
+      const s = loadSession();
+      if(s && base && key){
+        loginCard.style.display = "none";
+        panel.style.display = "grid";
+        logoutBtn.style.display = "inline-flex";
+        resetForm();
+        await reload();
+      }else{
+        // Default currency
+        currencyEl.value = cfg.DEFAULT_CURRENCY || "SAR";
+      }
+    })();
+  </script>
 </body>
 </html>
-
