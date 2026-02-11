@@ -7,9 +7,16 @@
 
   <style>
     :root{
-      --bg:#0b1220; --card:#111b2e; --text:#e9eefc; --muted:#a9b4d0;
-      --border:rgba(255,255,255,.10); --accent:#5aa7ff; --ok:#4ee59b; --danger:#ff5a7a;
-      --shadow:0 12px 30px rgba(0,0,0,.35); --radius:16px;
+      --bg:#0b1220;
+      --card:#111b2e;
+      --text:#e9eefc;
+      --muted:#a9b4d0;
+      --border:rgba(255,255,255,.10);
+      --shadow:0 12px 30px rgba(0,0,0,.35);
+      --radius:16px;
+      --accent:#5aa7ff;
+      --ok:#4ee59b;
+      --danger:#ff5a7a;
     }
     *{box-sizing:border-box}
     body{
@@ -38,15 +45,6 @@
     }
     h1{margin:0;font-size:18px}
     .subtitle{margin:6px 0 0;color:var(--muted);font-size:13px}
-    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .btn{
-      cursor:pointer;border:1px solid var(--border);
-      background:rgba(255,255,255,.06);color:var(--text);
-      padding:10px 12px;border-radius:12px;font-weight:900;text-decoration:none;
-      display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
-    }
-    .btn:hover{filter:brightness(1.08)}
-    .btn.ghost{background:rgba(255,255,255,.03)}
     .pill{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);color:var(--muted);background:rgba(255,255,255,.03)}
     .toolbar{margin-top:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
     .search{
@@ -55,13 +53,25 @@
     }
     .search input{width:100%;border:none;outline:none;background:transparent;color:var(--text);font-size:14px}
     .small{font-size:12px;color:var(--muted)}
+    #status{margin-top:14px;color:var(--muted);font-size:13px}
+
     .grid{margin-top:16px;display:grid;gap:14px;grid-template-columns:repeat(auto-fit, minmax(230px, 1fr))}
     .card{
-      border-radius:var(--radius);border:1px solid var(--border);background:rgba(17,27,46,.92);
-      box-shadow:var(--shadow);overflow:hidden;cursor:pointer;transition:transform .12s ease, filter .12s ease;
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      background:rgba(17,27,46,.92);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      cursor:pointer;
+      transition:transform .12s ease, filter .12s ease;
     }
     .card:hover{transform:translateY(-2px); filter:brightness(1.06)}
-    .imgWrap{height:170px;background:linear-gradient(135deg, rgba(90,167,255,.18), rgba(78,229,155,.12));border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+    .imgWrap{
+      height:170px;
+      background:linear-gradient(135deg, rgba(90,167,255,.18), rgba(78,229,155,.12));
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;
+    }
     .imgWrap img{width:100%;height:100%;object-fit:cover;display:none}
     .imgPlaceholder{text-align:center;color:rgba(233,238,252,.9);font-weight:900;padding:10px;line-height:1.4}
     .content{padding:12px}
@@ -71,6 +81,7 @@
     .price{font-weight:1000;font-size:14px}
     .tag{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);color:var(--muted)}
     .tag.featured{border-color:rgba(255,211,107,.45);color:#ffd36b}
+
     footer{margin-top:18px;border-top:1px solid var(--border);color:var(--muted);padding:18px 0 30px;font-size:12px;text-align:center}
 
     /* Modal */
@@ -85,9 +96,15 @@
     .modalImg img{width:100%;height:100%;object-fit:cover;display:none}
     .contactBox{border:1px solid var(--border);background:rgba(255,255,255,.03);border-radius:14px;padding:12px}
     .contactBtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{
+      cursor:pointer;border:1px solid var(--border);
+      background:rgba(255,255,255,.06);color:var(--text);
+      padding:10px 12px;border-radius:12px;font-weight:900;text-decoration:none;
+      display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+    }
+    .btn:hover{filter:brightness(1.08)}
     .btn.whatsapp{border-color:rgba(78,229,155,.45); background:rgba(78,229,155,.12)}
     .btn.instagram{border-color:rgba(90,167,255,.45); background:rgba(90,167,255,.12)}
-    .btn.disabled{opacity:.45;pointer-events:none}
     .note{font-size:12px;color:var(--muted);margin-top:8px}
   </style>
 </head>
@@ -103,22 +120,20 @@
             <p class="subtitle">اضغط على أي منتج للتواصل واتساب أو انستغرام</p>
           </div>
         </div>
-        <div class="actions">
-          <span class="pill" id="countPill">0 منتج</span>
-          <a class="btn ghost" href="./admin.html">Admin</a>
-        </div>
+        <span class="pill" id="countPill">0 منتج</span>
       </div>
 
       <div class="toolbar">
         <div class="search">
           🔎 <input id="searchInput" type="text" placeholder="ابحث باسم المنتج..." />
         </div>
-        <div class="small" id="hintText">جاهز الآن — بعدين بنربطه مع Supabase</div>
+        <div class="small" id="hintText"></div>
       </div>
     </div>
   </header>
 
   <main class="container">
+    <div id="status"></div>
     <div class="grid" id="grid"></div>
     <footer>© <span id="year"></span> <span id="storeName2"></span></footer>
   </main>
@@ -165,6 +180,12 @@
   <script src="./config.js"></script>
   <script>
     const cfg = window.STORE_CONFIG || {};
+    const grid = document.getElementById("grid");
+    const countPill = document.getElementById("countPill");
+    const searchInput = document.getElementById("searchInput");
+    const hintText = document.getElementById("hintText");
+    const statusEl = document.getElementById("status");
+
     document.getElementById("year").textContent = new Date().getFullYear();
     document.getElementById("storeName").textContent = cfg.STORE_NAME || "Suhaib Store";
     document.getElementById("storeName2").textContent = cfg.STORE_NAME || "Suhaib Store";
@@ -174,17 +195,7 @@
     logo.src = cfg.LOGO_PATH || "./logo.png";
     logo.onerror = () => { logo.style.display = "none"; };
 
-    const DEMO_PRODUCTS = [
-      { id:"1", title_ar:"ساعة ذكية", desc_ar:"ساعة مريحة للاستخدام اليومي مع تصميم أنيق.", price:"25", currency:"JOD", image_url:"", featured:true },
-      { id:"2", title_ar:"سماعات بلوتوث", desc_ar:"صوت واضح وبطارية ممتازة.", price:"15", currency:"JOD", image_url:"", featured:false },
-      { id:"3", title_ar:"حامل هاتف للسيارة", desc_ar:"ثابت وسهل التركيب، مناسب لمعظم الهواتف.", price:"7", currency:"JOD", image_url:"", featured:false },
-    ];
-
-    const grid = document.getElementById("grid");
-    const countPill = document.getElementById("countPill");
-    const searchInput = document.getElementById("searchInput");
-    const hintText = document.getElementById("hintText");
-
+    // Modal
     const overlay = document.getElementById("overlay");
     const closeBtn = document.getElementById("closeBtn");
     const mImg = document.getElementById("mImg");
@@ -199,25 +210,20 @@
 
     let all = [];
 
-    function isSupabaseReady(){
-      return (cfg.SUPABASE_URL || "").startsWith("https://") && (cfg.SUPABASE_ANON_KEY || "").length > 20;
-    }
-
-    function cleanNumber(n){
-      return (n || "").toString().replace(/[^\d]/g,"").trim();
+    function cleanDigits(x){
+      return (x || "").toString().replace(/[^\d]/g, "").trim();
     }
 
     function buildWhatsAppLink(p){
-      const num = cleanNumber(cfg.WHATSAPP_NUMBER);
-      if(!num || (cfg.WHATSAPP_NUMBER || "").includes("PUT_")) return "";
+      const num = cleanDigits(cfg.WHATSAPP_NUMBER);
+      if(!num) return "";
       const msg = `مرحبا، مهتم بمنتج: ${p.title_ar} بسعر ${p.price} ${p.currency || ""}. هل متوفر؟`;
       return `https://wa.me/${encodeURIComponent(num)}?text=${encodeURIComponent(msg)}`;
     }
 
     function buildInstagramLink(){
       const url = (cfg.INSTAGRAM_URL || "").trim();
-      if(!url || url.includes("PUT_")) return "";
-      return url;
+      return url || "";
     }
 
     function render(list){
@@ -303,14 +309,11 @@
       const wa = buildWhatsAppLink(p);
       const ig = buildInstagramLink();
 
-      if(wa){ waBtn.href = wa; waBtn.classList.remove("disabled"); }
-      else { waBtn.href = "#"; waBtn.classList.add("disabled"); }
-
-      if(ig){ igBtn.href = ig; igBtn.classList.remove("disabled"); }
-      else { igBtn.href = "#"; igBtn.classList.add("disabled"); }
+      waBtn.href = wa || "#";
+      igBtn.href = ig || "#";
 
       contactNote.textContent = (!wa || !ig)
-        ? "⚠️ ضع رقم واتساب ورابط الانستغرام داخل config.js (WHATSAPP_NUMBER و INSTAGRAM_URL)."
+        ? "⚠️ بيانات التواصل غير مكتملة داخل config.js"
         : "";
 
       overlay.style.display = "flex";
@@ -328,42 +331,53 @@
     }
     searchInput.addEventListener("input", applySearch);
 
-    async function loadFromSupabase(){
-      const url =
-        cfg.SUPABASE_URL +
-        "/rest/v1/products?select=id,title_ar,desc_ar,price,currency,image_url,featured,created_at&order=created_at.desc";
+    async function loadProducts(){
+      statusEl.textContent = "جارٍ تحميل المنتجات...";
+      hintText.textContent = "";
 
-      const res = await fetch(url, {
-        headers: {
-          apikey: cfg.SUPABASE_ANON_KEY,
-          Authorization: "Bearer " + cfg.SUPABASE_ANON_KEY,
-        },
-      });
+      const base = (cfg.SUPABASE_URL || "").trim();
+      const key  = (cfg.SUPABASE_PUBLISHABLE_KEY || "").trim();
 
-      if(!res.ok){
-        const t = await res.text();
-        throw new Error(t);
+      if(!base || !key){
+        statusEl.textContent = "⚠️ لم يتم ربط Supabase داخل config.js";
+        all = [];
+        render(all);
+        return;
       }
-      return await res.json();
+
+      try{
+        const url = base + "/rest/v1/products"
+          + "?select=id,title_ar,desc_ar,price,currency,image_url,featured,created_at"
+          + "&order=created_at.desc";
+
+        // ✅ مع sb_publishable: نستخدم apikey فقط (بدون Authorization)
+        const res = await fetch(url, {
+          headers: {
+            apikey: key,
+            Accept: "application/json",
+          }
+        });
+
+        if(!res.ok){
+          const t = await res.text();
+          throw new Error(t);
+        }
+
+        const data = await res.json();
+        all = Array.isArray(data) ? data : [];
+
+        statusEl.textContent = all.length ? "" : "لا توجد منتجات حالياً.";
+        render(all);
+
+      }catch(err){
+        console.log(err);
+        statusEl.textContent = "لا توجد منتجات حالياً.";
+        all = [];
+        render(all);
+      }
     }
 
-    (async ()=>{
-      if(isSupabaseReady()){
-        hintText.textContent = "✅ مربوط مع Supabase";
-        try{
-          all = await loadFromSupabase();
-        }catch(err){
-          hintText.textContent = "⚠️ حصل خطأ بجلب البيانات من Supabase — سيتم عرض منتجات تجريبية";
-          all = DEMO_PRODUCTS;
-          console.log(err);
-        }
-      }else{
-        hintText.textContent = "⚠️ Supabase غير مربوط بعد — منتجات تجريبية";
-        all = DEMO_PRODUCTS;
-      }
-      render(all);
-    })();
+    loadProducts();
   </script>
 </body>
 </html>
-
